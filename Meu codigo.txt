@@ -1,3 +1,4 @@
+
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
@@ -6,40 +7,28 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 const int pinoSensor = A0;
 int valorLido;
 
-const int pinoSensor02 = A1;
-int valorLido02;
-
-int Borrifador01 = 3;
-int Borrifador02 = 2;
+int Borrifador01 = 4;
+int Borrifador02 = 5;
 
 int analogSoloSeco = 1023; //VALOR MEDIDO COM O SOLO SECO (VOCÊ PODE FAZER TESTES E AJUSTAR ESTE VALOR)
-int analogSoloMolhado = 500; //VALOR MEDIDO COM O SOLO MOLHADO (VOCÊ PODE FAZER TESTES E AJUSTAR ESTE VALOR)
-int analogSoloSecoSamambaia = 1023; //VALOR MEDIDO COM O SOLO SECO (VOCÊ PODE FAZER TESTES E AJUSTAR ESTE VALOR)
-int analogSoloMolhadoSamambaia = 200; //VALOR MEDIDO COM O SOLO MOLHADO (VOCÊ PODE FAZER TESTES E AJUSTAR ESTE VALOR)
+int analogSoloMolhado = 0; //VALOR MEDIDO COM O SOLO MOLHADO (VOCÊ PODE FAZER TESTES E AJUSTAR ESTE VALOR)
 int percSoloSeco = 0; //MENOR PERCENTUAL DO SOLO SECO (0% - NÃO ALTERAR)
 int percSoloMolhado = 100; //MAIOR PERCENTUAL DO SOLO MOLHADO (100% - NÃO ALTERAR)
 
-int umidadeSolo = 0;
-int soloSamambaia = 20;
-int soloBonsai = 60;
+int umidadeSolo = 55;
 
 int LeituraSolo = analogRead(pinoSensor);
 int Limite = 100;
-int idealBonsai = 62;
-int idealSamambaia = 23;
+int idealPlantas = 75;
 
 void setup(){
 
  lcd.init();
   
  pinMode(Borrifador01, OUTPUT);
+ pinMode(Borrifador02, OUTPUT);
  Serial.begin(9600); //INICIALIZA A SERIAL
  Serial.println("Lendo a umidade do solo Bonsai...");
- delay(2000);
-
- pinMode(Borrifador02, OUTPUT);
- Serial.begin(9600);
- Serial.println("Lendo a umidade do solo Samambaias...");
  delay(2000);
 }
 
@@ -49,53 +38,29 @@ void loop(){
      
      valorLido = constrain(analogRead(pinoSensor),analogSoloMolhado,analogSoloSeco);
      valorLido = map(valorLido,analogSoloMolhado,analogSoloSeco,percSoloMolhado,percSoloSeco);
-     Serial.print("Umidade do solo Bonsai: ");
+     Serial.print("Umidade do solo das plantas: ");
      Serial.print(valorLido);
      Serial.println("%");
      lcd.setBacklight(HIGH);
      lcd.setCursor(0,0);
      lcd.print("Umidade do solo");
      lcd.setCursor(0,1);
-     lcd.print("Bonsai: ");
+     lcd.print("Plantas: ");
      lcd.print(valorLido);
      lcd.print("%");
-     delay(3000);
+     delay(1000);
      
-     valorLido02 = constrain(analogRead(pinoSensor02),analogSoloMolhadoSamambaia,analogSoloSecoSamambaia);
-     valorLido02 = map(valorLido02,analogSoloMolhadoSamambaia,analogSoloSecoSamambaia,percSoloMolhado,percSoloSeco); 
-     Serial.print("Umidade do solo Samambaia: ");
-     Serial.print(valorLido02);
-     Serial.println("%");
-     lcd.setBacklight(HIGH);
-     lcd.setCursor(0,0);
-     lcd.print("Umidade do solo");
-     lcd.setCursor(0,1);
-     lcd.print("Samambaias: ");
-     lcd.print(valorLido02);
-     lcd.print("%");
-     delay(3000);
-     
-  if(valorLido <= soloBonsai){
-     while(valorLido != idealBonsai){
-     Serial.println("Irrigando Bonsai");
-     lcd.print("Irrigando Bonsai");
+  if(valorLido <= umidadeSolo){
+     while(valorLido != idealPlantas){
+     Serial.println("Irrigando plantas");
+     lcd.print("Irrigando plantas");
      digitalWrite(Borrifador01, LOW);
-     break;
-     }
-  }
-  if(valorLido >= idealBonsai){
-     digitalWrite(Borrifador01, HIGH);
-  }
-
-  if(valorLido02 <= soloSamambaia){
-     while(valorLido02 != idealSamambaia){
-     Serial.println("Irrigando Planta");
-     lcd.print("Irrigando Samambaias");
      digitalWrite(Borrifador02, LOW);
      break;
      }
   }
-  if(valorLido02 >= idealSamambaia){
+  if(valorLido >= idealPlantas){
+     digitalWrite(Borrifador01, HIGH);
      digitalWrite(Borrifador02, HIGH);
   }
-}
+  }
