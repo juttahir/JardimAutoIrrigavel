@@ -83,14 +83,14 @@ void loop(){
      delay(1000);
      
     if(horas == 13 && minutos == 0){
-      while(valorLido != idealPlantas){
+      while(horas == 13 && minutos == 0){
       Serial.println("Irrigando plantas");
       lcd.print("Irrigando plantas");
       digitalWrite(Borrifador01, LOW);
       digitalWrite(Borrifador02, LOW);
       break;
       }
-    if(horas == 13 && minutos == 1){    
+    if(!horas == 13 && minutos == 0){    
       digitalWrite(Borrifador01, HIGH);
       digitalWrite(Borrifador02, HIGH);
     }     
