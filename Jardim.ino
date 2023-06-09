@@ -90,7 +90,7 @@ void loop(){
       digitalWrite(Borrifador02, LOW);
       break;
       }
-    if(!horas == 13 && minutos == 0){    
+    if(!horas == 13 && !minutos == 0){    
       digitalWrite(Borrifador01, HIGH);
       digitalWrite(Borrifador02, HIGH);
     }     
